@@ -5,7 +5,12 @@ import { initializeMockData } from "./utils/mockData";
 import AppLayout from "./components/layout/AppLayout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import { useEffect } from 'react';
+import CRM from "./pages/CRM";
+import Inquiries from "./pages/Inquiries";
+import Orders from "./pages/Orders";
+import Inventory from "./pages/Inventory";
+import Invoices from "./pages/Invoices";
+import Reports from "./pages/Reports";
 
 // Initialize mock data on app load
 initializeMockData();
@@ -39,6 +44,48 @@ const App = () => (
             <ProtectedRoute>
               <AppLayout>
                 <Dashboard />
+              </AppLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/crm" element={
+            <ProtectedRoute>
+              <AppLayout>
+                <CRM />
+              </AppLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/inquiries" element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Inquiries />
+              </AppLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/orders" element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Orders />
+              </AppLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/inventory" element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Inventory />
+              </AppLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/invoices" element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Invoices />
+              </AppLayout>
+            </ProtectedRoute>
+          } />
+          <Route path="/reports" element={
+            <ProtectedRoute>
+              <AppLayout>
+                <Reports />
               </AppLayout>
             </ProtectedRoute>
           } />
