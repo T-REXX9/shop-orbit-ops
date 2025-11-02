@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Select, DatePicker, Space, Tag, Typography } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { getData, addItem, updateItem, deleteItem } from '@/utils/mockData';
-import type { Invoice, Order } from '@/types';
+import { getData, addItem, updateItem, deleteItem, Invoice, Order } from '@/utils/mockData';
 import dayjs from 'dayjs';
 
 const { Title } = Typography;
@@ -17,7 +16,7 @@ const Invoices: React.FC = () => {
 
   const loadData = () => {
     setInvoices(getData<Invoice>('erp_invoices'));
-    setOrders(getData<Order>('erp_orders').filter(o => o.status === 'delivered'));
+    setOrders(getData<Order>('erp_orders').filter(o => o.status === 'completed'));
   };
 
   useEffect(() => {

@@ -1,12 +1,76 @@
 // Mock data utilities for localStorage-based data persistence
-import type { Customer, Product, Inquiry, Order, Invoice } from '@/types';
+
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  company?: string;
+  type: 'lead' | 'customer';
+  createdAt: string;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  sku: string;
+  price: number;
+  stock: number;
+  category: string;
+  supplier?: string;
+}
+
+export interface Inquiry {
+  id: string;
+  customerId: string;
+  customerName: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  status: 'pending' | 'converted' | 'rejected';
+  notes?: string;
+  createdAt: string;
+}
+
+export interface Order {
+  id: string;
+  customerId: string;
+  customerName: string;
+  items: Array<{
+    productId: string;
+    productName: string;
+    quantity: number;
+    price: number;
+  }>;
+  total: number;
+  status: 'pending' | 'processing' | 'completed' | 'cancelled';
+  createdAt: string;
+  salesPerson: string;
+}
+
+export interface Invoice {
+  id: string;
+  orderId: string;
+  customerName: string;
+  items: Array<{
+    productName: string;
+    quantity: number;
+    price: number;
+  }>;
+  subtotal: number;
+  tax: number;
+  total: number;
+  status: 'draft' | 'sent' | 'paid';
+  createdAt: string;
+  dueDate: string;
+}
 
 // Initialize mock data if not exists
 export const initializeMockData = () => {
   if (!localStorage.getItem('erp_customers')) {
     const mockCustomers: Customer[] = [
-      { id: '1', name: 'John Doe', email: 'john@example.com', phone: '123-456-7890', company: 'Acme Corp', address: '123 Main St', status: 'active', createdAt: new Date().toISOString() },
-      { id: '2', name: 'Jane Smith', email: 'jane@example.com', phone: '098-765-4321', company: 'Tech Corp', address: '456 Oak Ave', status: 'active', createdAt: new Date().toISOString() },
+      { id: '1', name: 'John Doe', email: 'john@example.com', phone: '123-456-7890', company: 'Acme Corp', type: 'customer', createdAt: new Date().toISOString() },
+      { id: '2', name: 'Jane Smith', email: 'jane@example.com', phone: '098-765-4321', type: 'lead', createdAt: new Date().toISOString() },
     ];
     localStorage.setItem('erp_customers', JSON.stringify(mockCustomers));
   }
