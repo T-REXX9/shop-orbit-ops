@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Modal, Form, Select, InputNumber, Input, Space, Tag, Typography } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import type { ColumnsType } from 'antd/es/table';
-import { getData, addItem, updateItem, deleteItem, Inquiry, Customer, Product } from '@/utils/mockData';
+import { Button, Modal, Form, Typography } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { getData } from '@/utils/mockData';
+import { useInquiries } from '@/features/inquiries/hooks/useInquiries';
+import { InquiryTable } from '@/features/inquiries/components/InquiryTable';
+import { InquiryForm } from '@/features/inquiries/components/InquiryForm';
+import type { Inquiry, Customer, Product } from '@/types';
 
 const { Title } = Typography;
-const { TextArea } = Input;
 
 const Inquiries: React.FC = () => {
-  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const { inquiries, addInquiry, updateInquiry, deleteInquiry } = useInquiries();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingInquiry, setEditingInquiry] = useState<Inquiry | null>(null);
   const [form] = Form.useForm();
 
-  const loadData = () => {
-    setInquiries(getData<Inquiry>('erp_inquiries'));
+  useEffect(() => {
     setCustomers(getData<Customer>('erp_customers'));
     setProducts(getData<Product>('erp_products'));
-  };
-
-  useEffect(() => {
-    loadData();
   }, []);
 
   const handleAdd = () => {
@@ -41,93 +38,33 @@ const Inquiries: React.FC = () => {
     Modal.confirm({
       title: 'Delete Inquiry',
       content: 'Are you sure you want to delete this inquiry?',
-      onOk: () => {
-        deleteItem('erp_inquiries', id);
-        loadData();
-      },
+      onOk: () => deleteInquiry(id),
     });
   };
 
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      const customer = customers.find(c => c.id === values.customerId);
-      const product = products.find(p => p.id === values.productId);
-      
       if (editingInquiry) {
-        updateItem('erp_inquiries', editingInquiry.id, {
-          ...values,
-          customerName: customer?.name || '',
-          productName: product?.name || '',
-        });
+        updateInquiry(editingInquiry.id, values);
       } else {
-        const newInquiry: Inquiry = {
-          ...values,
-          id: Date.now().toString(),
-          customerName: customer?.name || '',
-          productName: product?.name || '',
-          createdAt: new Date().toISOString(),
-        };
-        addItem('erp_inquiries', newInquiry);
+        addInquiry(values);
       }
       setIsModalOpen(false);
-      loadData();
     } catch (error) {
       console.error('Validation failed:', error);
     }
   };
 
-  const columns: ColumnsType<Inquiry> = [
-    {
-      title: 'Customer',
-      dataIndex: 'customerName',
-      key: 'customerName',
-    },
-    {
-      title: 'Product',
-      dataIndex: 'productName',
-      key: 'productName',
-    },
-    {
-      title: 'Quantity',
-      dataIndex: 'quantity',
-      key: 'quantity',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status: string) => {
-        const colorMap = { pending: 'blue', converted: 'green', rejected: 'red' };
-        return <Tag color={colorMap[status as keyof typeof colorMap]}>{status.toUpperCase()}</Tag>;
-      },
-    },
-    {
-      title: 'Notes',
-      dataIndex: 'notes',
-      key: 'notes',
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Space>
-          <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
-          <Button icon={<DeleteOutlined />} danger onClick={() => handleDelete(record.id)} />
-        </Space>
-      ),
-    },
-  ];
-
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Title level={2}>Inquiries</Title>
+        <Title level={2}>Inquiry Management</Title>
         <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
           Add Inquiry
         </Button>
       </div>
-      <Table columns={columns} dataSource={inquiries} rowKey="id" />
+      <InquiryTable inquiries={inquiries} onEdit={handleEdit} onDelete={handleDelete} />
       
       <Modal
         title={editingInquiry ? 'Edit Inquiry' : 'Add Inquiry'}
@@ -135,35 +72,7 @@ const Inquiries: React.FC = () => {
         onOk={handleSubmit}
         onCancel={() => setIsModalOpen(false)}
       >
-        <Form form={form} layout="vertical">
-          <Form.Item name="customerId" label="Customer" rules={[{ required: true }]}>
-            <Select>
-              {customers.map(c => (
-                <Select.Option key={c.id} value={c.id}>{c.name}</Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item name="productId" label="Product" rules={[{ required: true }]}>
-            <Select>
-              {products.map(p => (
-                <Select.Option key={p.id} value={p.id}>{p.name}</Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item name="quantity" label="Quantity" rules={[{ required: true }]}>
-            <InputNumber min={1} style={{ width: '100%' }} />
-          </Form.Item>
-          <Form.Item name="status" label="Status" rules={[{ required: true }]}>
-            <Select>
-              <Select.Option value="pending">Pending</Select.Option>
-              <Select.Option value="converted">Converted</Select.Option>
-              <Select.Option value="rejected">Rejected</Select.Option>
-            </Select>
-          </Form.Item>
-          <Form.Item name="notes" label="Notes">
-            <TextArea rows={3} />
-          </Form.Item>
-        </Form>
+        <InquiryForm form={form} customers={customers} products={products} />
       </Modal>
     </div>
   );

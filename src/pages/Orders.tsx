@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Select, Space, Tag, Typography, InputNumber } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { getData, addItem, updateItem, deleteItem, Order, Customer, Product } from '@/utils/mockData';
+import { getData, addItem, updateItem, deleteItem } from '@/utils/mockData';
+import type { Order, Customer, Product } from '@/types';
 import { useAuth } from '@/contexts/AuthContext';
 
 const { Title } = Typography;
@@ -126,7 +127,7 @@ const Orders: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       render: (status: string) => {
-        const colorMap = { pending: 'blue', processing: 'orange', completed: 'green', cancelled: 'red' };
+        const colorMap = { pending: 'blue', processing: 'orange', delivered: 'green', cancelled: 'red' };
         return <Tag color={colorMap[status as keyof typeof colorMap]}>{status.toUpperCase()}</Tag>;
       },
     },
@@ -176,7 +177,7 @@ const Orders: React.FC = () => {
             <Select>
               <Select.Option value="pending">Pending</Select.Option>
               <Select.Option value="processing">Processing</Select.Option>
-              <Select.Option value="completed">Completed</Select.Option>
+              <Select.Option value="delivered">Delivered</Select.Option>
               <Select.Option value="cancelled">Cancelled</Select.Option>
             </Select>
           </Form.Item>

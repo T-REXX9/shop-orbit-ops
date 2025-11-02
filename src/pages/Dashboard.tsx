@@ -6,7 +6,8 @@ import {
   FileTextOutlined,
   WarningOutlined 
 } from '@ant-design/icons';
-import { getData, Order, Inquiry, Product } from '@/utils/mockData';
+import { getData } from '@/utils/mockData';
+import type { Order, Inquiry, Product } from '@/types';
 import dayjs from 'dayjs';
 
 const { Title } = Typography;
@@ -26,7 +27,7 @@ const Dashboard: React.FC = () => {
     const products = getData<Product>('erp_products');
 
     const revenue = orders
-      .filter(o => o.status === 'completed')
+      .filter(o => o.status === 'delivered')
       .reduce((sum, o) => sum + o.total, 0);
 
     const lowStock = products.filter(p => p.stock < 20).length;
@@ -67,8 +68,8 @@ const Dashboard: React.FC = () => {
         <span style={{ 
           padding: '4px 12px', 
           borderRadius: '4px',
-          background: status === 'completed' ? '#22C55E20' : '#F59E0B20',
-          color: status === 'completed' ? '#22C55E' : '#F59E0B',
+          background: status === 'delivered' ? '#22C55E20' : '#F59E0B20',
+          color: status === 'delivered' ? '#22C55E' : '#F59E0B',
         }}>
           {status}
         </span>

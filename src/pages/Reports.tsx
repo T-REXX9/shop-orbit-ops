@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Statistic, Typography, Select, Table } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined, DollarOutlined, ShoppingOutlined, UserOutlined, FileTextOutlined } from '@ant-design/icons';
-import { getData, Order, Invoice, Customer, Product } from '@/utils/mockData';
+import { getData } from '@/utils/mockData';
+import type { Order, Invoice, Customer, Product } from '@/types';
 import type { ColumnsType } from 'antd/es/table';
 
 const { Title } = Typography;
@@ -25,7 +26,7 @@ const Reports: React.FC = () => {
     .reduce((sum, inv) => sum + inv.total, 0);
   
   const totalOrders = orders.length;
-  const completedOrders = orders.filter(o => o.status === 'completed').length;
+  const completedOrders = orders.filter(o => o.status === 'delivered').length;
   const totalCustomers = customers.length;
   const lowStockProducts = products.filter(p => p.stock < 10).length;
 
