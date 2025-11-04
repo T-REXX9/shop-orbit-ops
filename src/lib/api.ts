@@ -41,6 +41,14 @@ function isPublicEndpoint(path: string): boolean {
 }
 
 /**
+ * Custom fetch options that allow passing objects as body
+ * The body will be automatically JSON stringified
+ */
+type ApiFetchOptions = Omit<RequestInit, 'body'> & {
+  body?: any;
+};
+
+/**
  * Execute fetch request with JWT authentication, error handling, and JSON parsing
  * @param path - API path
  * @param options - Fetch options
@@ -49,7 +57,7 @@ function isPublicEndpoint(path: string): boolean {
  */
 export async function apiFetch<T>(
   path: string,
-  options: RequestInit & { body?: any } = {}
+  options: ApiFetchOptions = {}
 ): Promise<T> {
   // Get auth token
   const token = getAuthToken();
