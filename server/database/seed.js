@@ -4,8 +4,11 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import db, { getCurrentTimestamp } from './db.js';
+import db, { getCurrentTimestamp, getDb } from './db.js';
 import { logger } from '../utils/logger.js';
+
+// Ensure database is initialized
+await getDb();
 
 function seedCustomers() {
   logger.info('Seeding customers...');
