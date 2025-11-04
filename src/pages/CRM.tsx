@@ -113,7 +113,9 @@ const CRM: React.FC = () => {
   if (isLoading) {
     return (
       <div style={{ textAlign: 'center', padding: '50px' }}>
-        <Spin size="large" tip="Loading customers..." />
+        <Spin size="large">
+          <div style={{ paddingTop: 50 }}>Loading customers...</div>
+        </Spin>
       </div>
     );
   }

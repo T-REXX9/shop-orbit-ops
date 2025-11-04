@@ -108,7 +108,9 @@ const Inventory: React.FC = () => {
   if (isLoading) {
     return (
       <div style={{ textAlign: 'center', padding: '50px' }}>
-        <Spin size="large" tip="Loading products..." />
+        <Spin size="large">
+          <div style={{ paddingTop: 50 }}>Loading products...</div>
+        </Spin>
       </div>
     );
   }

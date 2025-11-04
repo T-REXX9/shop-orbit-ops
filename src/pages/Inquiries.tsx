@@ -4,6 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, ReloadOutlined } from '@ant
 import type { ColumnsType } from 'antd/es/table';
 import { useInquiries, useCustomers, useProducts } from '@/hooks/useApi';
 import type { Inquiry } from '@/types/api';
+import { apiFetch } from '@/lib/api';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -30,7 +31,6 @@ const Inquiries: React.FC = () => {
   }, [inquiriesError]);
 
   const handleAdd = () => {
-    form.resetFields();
     setEditingInquiry(null);
     setIsModalOpen(true);
   };
@@ -45,9 +45,17 @@ const Inquiries: React.FC = () => {
     Modal.confirm({
       title: 'Delete Inquiry',
       content: 'Are you sure you want to delete this inquiry?',
-      onOk: () => {
-        // TODO: Implement DELETE API call
-        message.info('Delete functionality will be implemented with mutations');
+      onOk: async () => {
+        try {
+          await apiFetch(`/api/v1/inquiries/${id}`, {
+            method: 'DELETE',
+          });
+          message.success('Inquiry deleted successfully');
+          refetchInquiries();
+        } catch (error) {
+          console.error('Error:', error);
+          message.error(error instanceof Error ? error.message : 'Failed to delete inquiry');
+        }
       },
     });
   };
@@ -56,11 +64,27 @@ const Inquiries: React.FC = () => {
     try {
       const values = await form.validateFields();
       
-      // TODO: Implement POST/PUT API calls
-      message.info('Create/Update functionality will be implemented with mutations');
+      if (editingInquiry) {
+        // Update existing inquiry
+        await apiFetch(`/api/v1/inquiries/${editingInquiry.id}`, {
+          method: 'PUT',
+          body: values,
+        });
+        message.success('Inquiry updated successfully');
+      } else {
+        // Create new inquiry
+        await apiFetch('/api/v1/inquiries', {
+          method: 'POST',
+          body: values,
+        });
+        message.success('Inquiry created successfully');
+      }
+      
       setIsModalOpen(false);
+      refetchInquiries();
     } catch (error) {
-      console.error('Validation failed:', error);
+      console.error('Error:', error);
+      message.error(error instanceof Error ? error.message : 'Failed to save inquiry');
     }
   };
 
@@ -110,7 +134,9 @@ const Inquiries: React.FC = () => {
   if (inquiriesLoading || customersLoading || productsLoading) {
     return (
       <div style={{ textAlign: 'center', padding: '50px' }}>
-        <Spin size="large" tip="Loading inquiries..." />
+        <Spin size="large">
+          <div style={{ paddingTop: 50 }}>Loading inquiries...</div>
+        </Spin>
       </div>
     );
   }
@@ -175,6 +201,11 @@ const Inquiries: React.FC = () => {
         open={isModalOpen}
         onOk={handleSubmit}
         onCancel={() => setIsModalOpen(false)}
+        afterOpenChange={(open) => {
+          if (open && !editingInquiry) {
+            form.resetFields();
+          }
+        }}
       >
         <Form form={form} layout="vertical">
           <Form.Item name="customerId" label="Customer" rules={[{ required: true }]}>
