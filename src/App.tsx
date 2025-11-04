@@ -1,5 +1,6 @@
 import { ConfigProvider } from 'antd';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { initializeMockData } from "./utils/mockData";
 import AppLayout from "./components/layout/AppLayout";
@@ -34,67 +35,70 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
-const App = () => (
-  <ConfigProvider theme={theme}>
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <AuthProvider>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={
-            <ProtectedRoute>
-              <AppLayout>
-                <Dashboard />
-              </AppLayout>
-            </ProtectedRoute>
-          } />
-          <Route path="/crm" element={
-            <ProtectedRoute>
-              <AppLayout>
-                <CRM />
-              </AppLayout>
-            </ProtectedRoute>
-          } />
-          <Route path="/inquiries" element={
-            <ProtectedRoute>
-              <AppLayout>
-                <Inquiries />
-              </AppLayout>
-            </ProtectedRoute>
-          } />
-          <Route path="/orders" element={
-            <ProtectedRoute>
-              <AppLayout>
-                <Orders />
-              </AppLayout>
-            </ProtectedRoute>
-          } />
-          <Route path="/inventory" element={
-            <ProtectedRoute>
-              <AppLayout>
-                <Inventory />
-              </AppLayout>
-            </ProtectedRoute>
-          } />
-          <Route path="/invoices" element={
-            <ProtectedRoute>
-              <AppLayout>
-                <Invoices />
-              </AppLayout>
-            </ProtectedRoute>
-          } />
-          <Route path="/reports" element={
-            <ProtectedRoute>
-              <AppLayout>
-                <Reports />
-              </AppLayout>
-            </ProtectedRoute>
-          } />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </AuthProvider>
-    </BrowserRouter>
-  </ConfigProvider>
-);
+function App() {
+  return (
+    <ConfigProvider theme={theme}>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <AuthProvider>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Dashboard />
+                </AppLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/crm" element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <CRM />
+                </AppLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/inquiries" element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Inquiries />
+                </AppLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/orders" element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Orders />
+                </AppLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/inventory" element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Inventory />
+                </AppLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/invoices" element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Invoices />
+                </AppLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/reports" element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <Reports />
+                </AppLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+          <Toaster />
+        </AuthProvider>
+      </BrowserRouter>
+    </ConfigProvider>
+  );
+}
 
 export default App;
