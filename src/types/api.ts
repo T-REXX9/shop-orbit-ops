@@ -83,13 +83,36 @@ export interface Product {
 // ============================================================================
 
 /**
+ * Role - User role information
+ */
+export interface Role {
+  id: string;
+  name: string;
+  key: string;
+}
+
+/**
+ * Permission - System permission
+ */
+export interface Permission {
+  id: string;
+  key: string;
+  resource: string;
+  action: 'view' | 'create' | 'edit' | 'delete';
+  description?: string;
+}
+
+/**
  * User - Authenticated user information
  */
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'owner' | 'salesperson';
+  role: Role;
+  permissions: string[];
+  status?: string;
+  lastLoginAt?: string;
 }
 
 /**
@@ -107,7 +130,26 @@ export interface LoginResponse {
   success: true;
   data: {
     token: string;
+    refreshToken: string;
     user: User;
+  };
+}
+
+/**
+ * RefreshTokenRequest - Token refresh request
+ */
+export interface RefreshTokenRequest {
+  refreshToken: string;
+}
+
+/**
+ * RefreshTokenResponse - Token refresh response
+ */
+export interface RefreshTokenResponse {
+  success: true;
+  data: {
+    token: string;
+    refreshToken: string;
   };
 }
 
@@ -116,7 +158,95 @@ export interface LoginResponse {
  */
 export interface AuthError {
   success: false;
-  message: string;
+  error: string;
+}
+
+/**
+ * UserListItem - User in list view
+ */
+export interface UserListItem {
+  id: string;
+  email: string;
+  name: string;
+  status: 'active' | 'inactive' | 'suspended';
+  role: Role;
+  createdAt: string;
+  updatedAt: string;
+  lastLoginAt?: string;
+}
+
+/**
+ * CreateUserRequest - Create user request
+ */
+export interface CreateUserRequest {
+  email: string;
+  password: string;
+  full_name: string;
+  role_id: string;
+}
+
+/**
+ * UpdateUserRequest - Update user request
+ */
+export interface UpdateUserRequest {
+  full_name?: string;
+  role_id?: string;
+  status?: 'active' | 'inactive' | 'suspended';
+}
+
+/**
+ * RoleWithPermissions - Role with full permission details
+ */
+export interface RoleWithPermissions {
+  id: string;
+  name: string;
+  key: string;
+  description?: string;
+  isSystemRole: boolean;
+  permissions: Permission[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * RoleListItem - Role in list view
+ */
+export interface RoleListItem {
+  id: string;
+  name: string;
+  key: string;
+  description?: string;
+  isSystemRole: boolean;
+  permissionCount: number;
+  userCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * CreateRoleRequest - Create role request
+ */
+export interface CreateRoleRequest {
+  role_name: string;
+  description?: string;
+  permission_ids: string[];
+}
+
+/**
+ * UpdateRoleRequest - Update role request
+ */
+export interface UpdateRoleRequest {
+  role_name?: string;
+  description?: string;
+  permission_ids?: string[];
+}
+
+/**
+ * PermissionGroup - Permissions grouped by resource
+ */
+export interface PermissionGroup {
+  resource: string;
+  permissions: Permission[];
 }
 
 // ============================================================================

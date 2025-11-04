@@ -48,10 +48,17 @@ export async function initializeDatabase() {
     await initDatabase();
     
     const schemaPath = join(__dirname, 'schema.sql');
-    const schema = readFileSync(schemaPath, 'utf8');
+    const authSchemaPath = join(__dirname, 'auth-schema.sql');
     
-    // Execute schema
+    const schema = readFileSync(schemaPath, 'utf8');
+    const authSchema = readFileSync(authSchemaPath, 'utf8');
+    
+    // Execute main schema
     db.exec(schema);
+    
+    // Execute auth schema
+    db.exec(authSchema);
+    
     saveDatabase();
     
     console.log('✅ Database initialized successfully');

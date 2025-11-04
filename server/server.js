@@ -22,6 +22,9 @@ import contactRoutes from './routes/contacts.js';
 import productRoutes from './routes/products.js';
 import supplierPriceRoutes from './routes/suppliers-prices.js';
 import imageRoutes from './routes/images.js';
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/users.js';
+import roleRoutes from './routes/roles.js';
 
 // Import utilities
 import { logger } from './utils/logger.js';
@@ -98,6 +101,9 @@ app.get('/health', (req, res) => {
 });
 
 // Mount API routes
+app.use(`${API_PREFIX}/auth`, authRoutes);
+app.use(`${API_PREFIX}/users`, userRoutes);
+app.use(`${API_PREFIX}/roles`, roleRoutes);
 app.use(`${API_PREFIX}/inquiries`, inquiryRoutes);
 app.use(`${API_PREFIX}/customers`, customerRoutes);
 app.use(API_PREFIX, contactRoutes); // Contains /customers/:id/contacts and /contacts routes
@@ -111,6 +117,9 @@ app.get(API_PREFIX, (req, res) => {
     name: 'Shop Orbit ERP API',
     version: '1.0.0',
     endpoints: {
+      auth: `${API_PREFIX}/auth`,
+      users: `${API_PREFIX}/users`,
+      roles: `${API_PREFIX}/roles`,
       inquiries: `${API_PREFIX}/inquiries`,
       customers: `${API_PREFIX}/customers`,
       contacts: `${API_PREFIX}/contacts`,
